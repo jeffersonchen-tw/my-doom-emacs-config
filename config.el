@@ -159,7 +159,6 @@
 (use-package org-mind-map
   :init
   (require 'ox-org)
-  :ensure t
   :config
   (setq org-mind-map-engine "dot")       ; Default. Directed Graph
   (setq org-mind-map-dot-command "/opt/homebrew/bin/dot")
@@ -253,7 +252,15 @@
   (define-key org-tree-slide-mode-map (kbd "<f9>") 'org-tree-slide-move-next-tree)
   )
 
+;; for org presentation using html
 (setq org-reveal-root "https://revealjs.com/")
 (setq org-reveal-title-slide nil)
 
-(setq org-preview-latex-default-process 'imagemagick)
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
+(setenv "PATH" (shell-command-to-string "echo -n $PATH"))
+(setenv "PATH" (concat ":/Library/TeX/texbin/" (getenv "PATH")))
+(add-to-list 'exec-path "/Library/TeX/texbin/")
+;; (setq latex-math-preview-command-path-alist
+;;       '((latex . "/Library/TeX/texbin/latex") (dvipng . "/Library/TeX/texbin/dvipng") (dvips . "/Library/TeX/texbin/dvips")))

@@ -53,3 +53,6 @@
 (package! company-org-roam)
 ;; create mindmap by org mode
 (package! org-mind-map)
+;;
+
+(package! exec-path-from-shell)
