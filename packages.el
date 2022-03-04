@@ -53,5 +53,3 @@
 (package! company-org-roam)
 ;; create mindmap by org mode
 (package! org-mind-map)
-;; for presentation
-(package! org-tree-slide)

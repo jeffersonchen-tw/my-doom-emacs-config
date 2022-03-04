@@ -32,7 +32,9 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
+;; (setq doom-theme 'doom-one)
+;; (setq doom-theme 'doom-solarized-dark)
+(setq doom-theme 'doom-spacegrey)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -74,7 +76,12 @@
 ;; they are implemented.
 
 ;;
+
+(add-hook 'before-save-hook #'whitespace-cleanup)
 (setenv "PYTHONPATH" (shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
+
+;; isspell
+(setq ispell-program-name "/opt/homebrew/bin/aspell")
 
 (setq org-roam-directory "~/Documents/Org/roam")
 
@@ -100,7 +107,7 @@
   (setq org-roam-mode-section-functions
       (list #'org-roam-backlinks-section
             #'org-roam-reflinks-section
-            ;; #'org-roam-unlinked-references-section
+            #'org-roam-unlinked-references-section
             ))
   (org-roam-setup))
 
@@ -109,8 +116,11 @@
 ;; startup with fullscreen
 (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
-(setq doom-font (font-spec :family "Fira Code" :size 26)
-      doom-variable-pitch-font (font-spec :family "Fira Code" :size 24))
+(setq doom-font (font-spec :family "JetBrains Mono" :size 26)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 36)
+      doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 25)
+      doom-unicode-font (font-spec :family "Fira Code")
+      doom-serif-font (font-spec :family "Fira Code" :weight 'light))
 
 ;; org mode
 (after! org
@@ -138,34 +148,12 @@
    (push '("[-]" . "❍" ) prettify-symbols-alist)
    (prettify-symbols-mode))
    )
-   
-(after! org
-  (custom-set-faces!
-    '(org-document-title :height 1.3)
-    '(org-level-1 :inherit outline-1 :weight extra-bold :height 1.4)
-    '(org-level-2 :inherit outline-2 :weight bold :height 1.15)
-    '(org-level-3 :inherit outline-3 :weight bold :height 1.12)
-    '(org-level-4 :inherit outline-4 :weight bold :height 1.09)
-    '(org-level-5 :inherit outline-5 :weight semi-bold :height 1.06)
-    '(org-level-6 :inherit outline-6 :weight semi-bold :height 1.03)
-    '(org-level-7 :inherit outline-7 :weight semi-bold)
-    '(org-level-8 :inherit outline-8 :weight semi-bold)
-    ;; Ensure that anything that should be fixed-pitch in org buffers appears that
-    ;; way
-    '(org-block nil :foreground nil :inherit 'fixed-pitch)
-    '(org-code nil   :inherit '(shadow fixed-pitch))
-    '(org-table nil   :inherit '(shadow fixed-pitch))
-    '(org-verbatim nil :inherit '(shadow fixed-pitch))
-    '(org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-    '(org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-    '(org-checkbox nil :inherit 'fixed-pitch)))   
+
 ;; log timestamp when TODO items are done
 (setq org-log-done 'time)
    
 (setq org-roam-graph-executable "/opt/homebrew/bin/dot")
-(setq doom-modeline-enable-word-count t)
 (setq org-display-remote-inline-images t)
-(setq org-startup-with-inline-images t)
 (setq org-roam-completion-everywhere t)
 
 (use-package org-mind-map
@@ -180,14 +168,10 @@
 
 (org-babel-do-load-languages
  'org-babel-load-languages
- '((plantuml . t)))
-;; org-tree-slide
-(define-key org-mode-map (kbd "<f8>") 'org-tree-slide-mode)
-(define-key org-mode-map (kbd "S-<f8>") 'org-tree-slide-skip-done-toggle)
-(with-eval-after-load "org-tree-slide"
-  (define-key org-tree-slide-mode-map (kbd "<f9>") 'org-tree-slide-move-previous-tree)
-  (define-key org-tree-slide-mode-map (kbd "<f10>") 'org-tree-slide-move-next-tree)
-  )
+ '((plantuml . t)
+   (python . t)
+   (latex . t)))
+
 ;; dashboard
 ;; dashboard icon
 (setq fancy-splash-image "~/.emacs.d/images/emacs-gnu-logo.png")
@@ -217,8 +201,9 @@
       "C-<down>"       #'+evil/window-move-down
       "C-<up>"         #'+evil/window-move-up
       "C-<right>"      #'+evil/window-move-right)
-(setq-default major-mode 'org-mode)
 
+;;
+(setq-default major-mode 'org-mode)
 
 ;; plantuml
 (setq plantuml-jar-path "~/plantuml.jar")
@@ -231,6 +216,44 @@
     gfm-mode
     org-mode)
   '(:seperate
-    company-ispell
+    company-capf
+    company-keywords
     company-files
+    company-ispell
+    company-dabbrev
     company-yasnippet))
+
+
+(setq markdown-command "markdown | smartypants")
+
+
+(use-package hide-mode-line)
+(defun efs/presentation-setup ()
+  (hide-mode-line-mode 1)
+  (text-scale-mode 1)
+  )
+  
+(defun efs/presentation-end ()
+  ;; Show the mode line again
+  (hide-mode-line-mode 0))
+
+(use-package org-tree-slide
+  :hook ((org-tree-slide-play . efs/presentation-setup)
+         (org-tree-slide-stop . efs/presentation-end))
+  :custom
+  (org-tree-slide-slide-in-effect t)
+  (org-tree-slide-activate-message "Presentation started!")
+  (org-tree-slide-deactivate-message "Presentation finished!")
+  (org-tree-slide-header t)
+  (org-tree-slide-breadcrumbs " > ")
+  (org-image-actual-width nil))
+
+(with-eval-after-load "org-tree-slide"
+  (define-key org-tree-slide-mode-map (kbd "<f7>") 'org-tree-slide-move-previous-tree)
+  (define-key org-tree-slide-mode-map (kbd "<f9>") 'org-tree-slide-move-next-tree)
+  )
+
+(setq org-reveal-root "https://revealjs.com/")
+(setq org-reveal-title-slide nil)
+
+(setq org-preview-latex-default-process 'imagemagick)

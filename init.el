@@ -21,7 +21,7 @@
 
        :completion
        (company
-        +childframe)           ; the ultimate code completion backend
+        +tng)           ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;;ivy               ; a search engine for love and life
@@ -155,6 +155,7 @@
             +dragndrop
             +present
             +babel
+            +jupyter
             +reveal)               ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
@@ -192,7 +193,5 @@
        ;;twitter           ; twitter client https://twitter.com/vnought
 
        :config
-       ;;literate
+       literate
        (default +bindings +smartparens))
-
-(setq evil-respect-visual-line-mode nil)
