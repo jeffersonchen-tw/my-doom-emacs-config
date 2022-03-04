@@ -128,7 +128,9 @@
         (lambda ()
           (and (looking-at org-outline-regexp)
                (looking-back "^\**")))))
+
 (setq org-hide-emphasis-markers t)
+
 (defun org-toggle-emphasis ()
   "Toggle hiding/showing of org emphasize markers."
   (interactive)
@@ -226,19 +228,8 @@
 (setq markdown-command "markdown | smartypants")
 
 
-(use-package hide-mode-line)
-(defun efs/presentation-setup ()
-  (hide-mode-line-mode 1)
-  (text-scale-mode 1)
-  )
-  
-(defun efs/presentation-end ()
-  ;; Show the mode line again
-  (hide-mode-line-mode 0))
 
 (use-package org-tree-slide
-  :hook ((org-tree-slide-play . efs/presentation-setup)
-         (org-tree-slide-stop . efs/presentation-end))
   :custom
   (org-tree-slide-slide-in-effect t)
   (org-tree-slide-activate-message "Presentation started!")
@@ -252,6 +243,9 @@
   (define-key org-tree-slide-mode-map (kbd "<f9>") 'org-tree-slide-move-next-tree)
   )
 
+;;
+(add-hook! 'org-mode-hook #'doom-disable-line-numbers-h)
+
 ;; for org presentation using html
 (setq org-reveal-root "https://revealjs.com/")
 (setq org-reveal-title-slide nil)
@@ -262,5 +256,3 @@
 (setenv "PATH" (shell-command-to-string "echo -n $PATH"))
 (setenv "PATH" (concat ":/Library/TeX/texbin/" (getenv "PATH")))
 (add-to-list 'exec-path "/Library/TeX/texbin/")
-;; (setq latex-math-preview-command-path-alist
-;;       '((latex . "/Library/TeX/texbin/latex") (dvipng . "/Library/TeX/texbin/dvipng") (dvips . "/Library/TeX/texbin/dvips")))
