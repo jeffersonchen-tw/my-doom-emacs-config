@@ -34,7 +34,7 @@
 ;; `load-theme' function. This is the default:
 ;; (setq doom-theme 'doom-one)
 ;; (setq doom-theme 'doom-solarized-dark)
-(setq doom-theme 'doom-spacegrey)
+(setq doom-theme 'doom-dark+)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -95,24 +95,22 @@
   :config
   :init
   (map!
-        :leader
-        :prefix ("r" . "org-roam")
-        "c" #'org-roam-capture
-        "f" #'org-roam-node-find
-        "i" #'org-roam-node-insert
-        "b" #'org-roam-buffer-toggle
-        "t" #'org-roam-tag-add
-        "T" #'org-roam-tag-remove)
+   :leader
+   :prefix ("r" . "org-roam")
+   "c" #'org-roam-capture
+   "f" #'org-roam-node-find
+   "i" #'org-roam-node-insert
+   "b" #'org-roam-buffer-toggle
+   "t" #'org-roam-tag-add
+   "T" #'org-roam-tag-remove)
   :config
   (setq org-roam-mode-section-functions
-      (list #'org-roam-backlinks-section
-            #'org-roam-reflinks-section
-            #'org-roam-unlinked-references-section
-            ))
+        (list #'org-roam-backlinks-section
+              #'org-roam-reflinks-section
+              #'org-roam-unlinked-references-section
+              ))
   (org-roam-setup))
 
-;; disable confirm message when leave emacs
-(setq confirm-kill-emacs nil)
 ;; startup with fullscreen
 (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
@@ -131,29 +129,23 @@
 
 (setq org-hide-emphasis-markers t)
 
-(defun org-toggle-emphasis ()
-  "Toggle hiding/showing of org emphasize markers."
-  (interactive)
-  (if org-hide-emphasis-markers
-      (set-variable 'org-hide-emphasis-markers nil)
-    (set-variable 'org-hide-emphasis-markers t)))
 (setq org-ellipsis "↴")
 ;; (setq
-    ;; org-superstar-headline-bullets-list '("⁖" "◉" "○" "✸" "✿")
+;; org-superstar-headline-bullets-list '("⁖" "◉" "○" "✸" "✿")
 ;; )
 
 (add-hook 'org-mode-hook (lambda ()
-   "Beautify Org Checkbox Symbol"
-   (push '("[ ]" .  "☐") prettify-symbols-alist)
-   (push '("[X]" . "☑" ) prettify-symbols-alist)
-   (push '("[x]" . "☑" ) prettify-symbols-alist)
-   (push '("[-]" . "❍" ) prettify-symbols-alist)
-   (prettify-symbols-mode))
-   )
+                           "Beautify Org Checkbox Symbol"
+                           (push '("[ ]" .  "☐") prettify-symbols-alist)
+                           (push '("[X]" . "☑" ) prettify-symbols-alist)
+                           (push '("[x]" . "☑" ) prettify-symbols-alist)
+                           (push '("[-]" . "❍" ) prettify-symbols-alist)
+                           (prettify-symbols-mode))
+          )
 
 ;; log timestamp when TODO items are done
 (setq org-log-done 'time)
-   
+
 (setq org-roam-graph-executable "/opt/homebrew/bin/dot")
 (setq org-display-remote-inline-images t)
 (setq org-roam-completion-everywhere t)
@@ -180,10 +172,11 @@
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom")
 ;; statusbar
-(setq doom-modeline-height 15)
+;; (setq doom-modeline-height 15)
+(setq doom-modeline-height 10)
 (custom-set-faces
-  '(mode-line ((t (:family "MesloLGS NF" :height 0.9))))
-  '(mode-line-inactive ((t (:family "Noto Sans" :height 0.9)))))
+ '(mode-line ((t (:family "MesloLGS NF" :height 0.6))))
+ '(mode-line-inactive ((t (:family "Noto Sans" :height 0.5)))))
 (display-time-mode 1)
 
 ;; open window right and bottom
@@ -249,6 +242,36 @@
 ;; for org presentation using html
 (setq org-reveal-root "https://revealjs.com/")
 (setq org-reveal-title-slide nil)
+
+;;
+;; keyword
+(after! hl-todo
+  (setq hl-todo-keyword-faces
+	`(("NOTICE" . "#FFFF00")
+	  ("notice" . "#FFFF00")
+          ("HOLD" . "#d0bf8f")
+          ("TODO" . "#cc9393")
+          ("todo" . "#cc9393")
+          ("NEXT" . "#dca3a3")
+          ("THEM" . "#dc8cc3")
+          ("PROG" . "#7cb8bb")
+          ("OKAY" . "#7cb8bb")
+          ("DONT" . "#5f7f5f")
+          ("FAIL" . "#8c5353")
+          ("DONE" . "#afd8af")
+          ("NOTE"   . "#d0bf8f")
+          ("KLUDGE" . "#d0bf8f")
+          ("HACK"   . "#d0bf8f")
+          ("TEMP"   . "#d0bf8f")
+          ("FIXME"  . "#cc9393")
+          ("fixme"  . "#cc9393")
+          ("XXX+"   . "#cc9393")
+	  )))
+;; clippy
+(map! :leader
+      (:prefix ("c h" . "Help info from Clippy")
+       :desc "Clippy describes function under point" "f" #'clippy-describe-function
+       :desc "Clippy describes variable under point" "v" #'clippy-describe-variable))
 
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))

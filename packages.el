@@ -54,5 +54,6 @@
 ;; create mindmap by org mode
 (package! org-mind-map)
 ;;
-
+(package! clippy)
+;;
 (package! exec-path-from-shell)
