@@ -57,3 +57,5 @@
 (package! clippy)
 ;;
 (package! exec-path-from-shell)
+
+(package! rime)

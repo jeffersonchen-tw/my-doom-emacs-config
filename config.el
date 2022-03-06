@@ -172,11 +172,10 @@
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom")
 ;; statusbar
-;; (setq doom-modeline-height 15)
 (setq doom-modeline-height 10)
 (custom-set-faces
  '(mode-line ((t (:family "MesloLGS NF" :height 0.6))))
- '(mode-line-inactive ((t (:family "Noto Sans" :height 0.5)))))
+ '(mode-line-inactive ((t (:family "Noto Sans" :height 0.6)))))
 (display-time-mode 1)
 
 ;; open window right and bottom
@@ -196,6 +195,8 @@
       "C-<up>"         #'+evil/window-move-up
       "C-<right>"      #'+evil/window-move-right)
 
+;; vim-sneak
+(evil-snipe-override-mode 1)
 ;;
 (setq-default major-mode 'org-mode)
 
@@ -279,3 +280,15 @@
 (setenv "PATH" (shell-command-to-string "echo -n $PATH"))
 (setenv "PATH" (concat ":/Library/TeX/texbin/" (getenv "PATH")))
 (add-to-list 'exec-path "/Library/TeX/texbin/")
+
+;; rime
+(use-package rime
+  :custom
+  (default-input-method "rime")
+  (rime-librime-root "~/.emacs.d/librime/dist")
+  (rime-emacs-module-header-root "/opt/homebrew/Cellar/emacs-plus@27/27.2/include")
+  )
+(setq rime-user-data-dir "~/Library/Rime")
+(setq rime-disable-predicates
+      '(rime-predicate-evil-mode-p
+        rime-predicate-after-alphabet-char-p))
