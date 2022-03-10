@@ -57,5 +57,7 @@
 (package! clippy)
 ;;
 (package! exec-path-from-shell)
-
+;;
+(package! multiple-cursors)
+;; using same input method with system (嘸蝦米輸入)
 (package! rime)

@@ -34,7 +34,7 @@
 ;; `load-theme' function. This is the default:
 ;; (setq doom-theme 'doom-one)
 ;; (setq doom-theme 'doom-solarized-dark)
-(setq doom-theme 'doom-dark+)
+(setq doom-theme 'doom-nord)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -74,9 +74,12 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
-
+;; macos key setup
+(setq mac-command-modifier 'meta)
+(setq mac-option-modifier nil)
+;; for yabai
+(setq frame-resize-pixelwise t)
 ;;
-
 (add-hook 'before-save-hook #'whitespace-cleanup)
 (setenv "PYTHONPATH" (shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
 
@@ -112,7 +115,7 @@
   (org-roam-setup))
 
 ;; startup with fullscreen
-(add-hook 'window-setup-hook 'toggle-frame-maximized t)
+;; (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
 (setq doom-font (font-spec :family "JetBrains Mono" :size 26)
       doom-big-font (font-spec :family "JetBrains Mono" :size 36)
@@ -129,7 +132,8 @@
 
 (setq org-hide-emphasis-markers t)
 
-(setq org-ellipsis "↴")
+;; (setq org-ellipsis "↴")
+(setq org-ellipsis " ▼")
 ;; (setq
 ;; org-superstar-headline-bullets-list '("⁖" "◉" "○" "✸" "✿")
 ;; )
@@ -222,73 +226,84 @@
 (setq markdown-command "markdown | smartypants")
 
 
+  (use-package org-tree-slide
+    :custom
+    (org-tree-slide-slide-in-effect t)
+    (org-tree-slide-activate-message "Presentation started!")
+    (org-tree-slide-deactivate-message "Presentation finished!")
+    (org-tree-slide-header t)
+    (org-tree-slide-breadcrumbs " > ")
+    (org-image-actual-width nil))
 
-(use-package org-tree-slide
-  :custom
-  (org-tree-slide-slide-in-effect t)
-  (org-tree-slide-activate-message "Presentation started!")
-  (org-tree-slide-deactivate-message "Presentation finished!")
-  (org-tree-slide-header t)
-  (org-tree-slide-breadcrumbs " > ")
-  (org-image-actual-width nil))
 
-(with-eval-after-load "org-tree-slide"
-  (define-key org-tree-slide-mode-map (kbd "<f7>") 'org-tree-slide-move-previous-tree)
-  (define-key org-tree-slide-mode-map (kbd "<f9>") 'org-tree-slide-move-next-tree)
-  )
+  (with-eval-after-load "org-tree-slide"
+    (define-key org-tree-slide-mode-map (kbd "<f7>") 'org-tree-slide-move-previous-tree)
+    (define-key org-tree-slide-mode-map (kbd "<f9>") 'org-tree-slide-move-next-tree)
+    )
+
+  ;;
+  (add-hook! 'org-mode-hook #'doom-disable-line-numbers-h)
+
+  ;; for org presentation using html
+  (setq org-reveal-root "https://revealjs.com/")
+  (setq org-reveal-title-slide nil)
+
+  ;;
+  ;; keyword
+  (after! hl-todo
+    (setq hl-todo-keyword-faces
+	  `(("NOTICE" . "#FFFF00")
+	    ("notice" . "#FFFF00")
+            ("HOLD" . "#d0bf8f")
+            ("TODO" . "#cc9393")
+            ("todo" . "#cc9393")
+            ("NEXT" . "#dca3a3")
+            ("THEM" . "#dc8cc3")
+            ("PROG" . "#7cb8bb")
+            ("OKAY" . "#7cb8bb")
+            ("DONT" . "#5f7f5f")
+            ("FAIL" . "#8c5353")
+            ("DONE" . "#afd8af")
+            ("NOTE"   . "#d0bf8f")
+            ("KLUDGE" . "#d0bf8f")
+            ("HACK"   . "#d0bf8f")
+            ("TEMP"   . "#d0bf8f")
+            ("FIXME"  . "#cc9393")
+            ("fixme"  . "#cc9393")
+            ("XXX+"   . "#cc9393")
+	    )))
+  ;; clippy
+  (map! :leader
+        (:prefix ("c h" . "Help info from Clippy")
+         :desc "Clippy describes function under point" "f" #'clippy-describe-function
+         :desc "Clippy describes variable under point" "v" #'clippy-describe-variable))
+
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize))
+
+  (setenv "PATH" (shell-command-to-string "echo -n $PATH"))
+  (setenv "PATH" (concat ":/Library/TeX/texbin/" (getenv "PATH")))
+  (add-to-list 'exec-path "/Library/TeX/texbin/")
+
+  ;; rime
+  (use-package rime
+    :custom
+    (default-input-method "rime")
+    (rime-librime-root "~/.emacs.d/librime/dist")
+    (rime-emacs-module-header-root "/opt/homebrew/Cellar/emacs-plus@27/27.2/include")
+    )
+  (setq rime-user-data-dir "~/Library/Rime")
+  (setq rime-disable-predicates
+        '(rime-predicate-evil-mode-p
+          rime-predicate-after-alphabet-char-p))
+
+;; horizontal scroll
+(setq mouse-wheel-tilt-scroll t)
+;;
+(global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
+;;
+(setenv "JAVA_HOME"  "/Library/Java/JavaVirtualMachines/temurin-11.jdk/Contents/Home/")
+(setq lsp-java-java-path "/Library/Java/JavaVirtualMachines/temurin-11.jdk/Contents/Home/bin/java")
+(setq lsp-java-server-install-dir "~/.emacs.d/eclipse.jdt.ls/")
 
 ;;
-(add-hook! 'org-mode-hook #'doom-disable-line-numbers-h)
-
-;; for org presentation using html
-(setq org-reveal-root "https://revealjs.com/")
-(setq org-reveal-title-slide nil)
-
-;;
-;; keyword
-(after! hl-todo
-  (setq hl-todo-keyword-faces
-	`(("NOTICE" . "#FFFF00")
-	  ("notice" . "#FFFF00")
-          ("HOLD" . "#d0bf8f")
-          ("TODO" . "#cc9393")
-          ("todo" . "#cc9393")
-          ("NEXT" . "#dca3a3")
-          ("THEM" . "#dc8cc3")
-          ("PROG" . "#7cb8bb")
-          ("OKAY" . "#7cb8bb")
-          ("DONT" . "#5f7f5f")
-          ("FAIL" . "#8c5353")
-          ("DONE" . "#afd8af")
-          ("NOTE"   . "#d0bf8f")
-          ("KLUDGE" . "#d0bf8f")
-          ("HACK"   . "#d0bf8f")
-          ("TEMP"   . "#d0bf8f")
-          ("FIXME"  . "#cc9393")
-          ("fixme"  . "#cc9393")
-          ("XXX+"   . "#cc9393")
-	  )))
-;; clippy
-(map! :leader
-      (:prefix ("c h" . "Help info from Clippy")
-       :desc "Clippy describes function under point" "f" #'clippy-describe-function
-       :desc "Clippy describes variable under point" "v" #'clippy-describe-variable))
-
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
-
-(setenv "PATH" (shell-command-to-string "echo -n $PATH"))
-(setenv "PATH" (concat ":/Library/TeX/texbin/" (getenv "PATH")))
-(add-to-list 'exec-path "/Library/TeX/texbin/")
-
-;; rime
-(use-package rime
-  :custom
-  (default-input-method "rime")
-  (rime-librime-root "~/.emacs.d/librime/dist")
-  (rime-emacs-module-header-root "/opt/homebrew/Cellar/emacs-plus@27/27.2/include")
-  )
-(setq rime-user-data-dir "~/Library/Rime")
-(setq rime-disable-predicates
-      '(rime-predicate-evil-mode-p
-        rime-predicate-after-alphabet-char-p))
