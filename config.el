@@ -33,8 +33,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;; (setq doom-theme 'doom-one)
-;; (setq doom-theme 'doom-solarized-dark)
-(setq doom-theme 'doom-nord)
+(setq doom-theme 'doom-nord-light)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -252,8 +251,11 @@
   ;; keyword
   (after! hl-todo
     (setq hl-todo-keyword-faces
-	  `(("NOTICE" . "#FFFF00")
-	    ("notice" . "#FFFF00")
+	  `(
+            ;; ("NOTICE" . "#FFFF00")
+	    ;; ("notice" . "#FFFF00")
+	    ("NOTICE" . "#cc9393")
+	    ("notice" . "#cc9393")
             ("HOLD" . "#d0bf8f")
             ("TODO" . "#cc9393")
             ("todo" . "#cc9393")
@@ -269,7 +271,7 @@
             ("HACK"   . "#d0bf8f")
             ("TEMP"   . "#d0bf8f")
             ("FIXME"  . "#cc9393")
-            ("fixme"  . "#cc9393")
+            ("Fixme"  . "#cc9393")
             ("XXX+"   . "#cc9393")
 	    )))
   ;; clippy
